@@ -8,8 +8,9 @@ namespace Cmta.Clients.Spa.Security
         [Parameter]
         public string[] Permissions
         {
-            //set => Policy = $"{PermissionAuthorizeAttribute.PolicyPrefix}{string.Join(",", value)}";
-            set => Policy = "";
+	    // Reverse these to enable / disable granted_authority claim based view authorization.
+            set => Policy = $"{PermissionAuthorizeAttribute.PolicyPrefix}{string.Join(",", value)}";
+            //set => Policy = "";
         }        
         
         [Parameter]
