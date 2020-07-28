@@ -1,0 +1,81 @@
+@page "/organization/locations"
+@using Blazorise
+@using Cmta.Clients.Spa.Api.Services
+@using Cmta.Clients.Spa.Contexts.Error
+@using Cmta.Hosts.General.Shared.Location
+@using Pagination = Cmta.Clients.Spa.Features.Shared.Pagination
+@using Cmta.Clients.Spa.Security
+@inject HttpClient Http
+@inject IAppErrorContext AppErrorContext
+@inject ILocationApiService LocationApiService
+@attribute [Microsoft.AspNetCore.Authorization.Authorize]
+
+<Row>
+    <Column ColumnSize="ColumnSize.Is12">
+        <h3>Manage Locations</h3>
+    </Column>
+</Row>
+<Row>
+    <Column ColumnSize="ColumnSize.Is12">
+        <Table Hoverable="true">
+            <TableHeader>
+                <TableRow>
+                    <TableHeaderCell>Name</TableHeaderCell>
+                    <TableHeaderCell>Alternate Name</TableHeaderCell>
+                    <PermissionAuthorizeView Permission="location.update">
+                        <TableHeaderCell>Edit</TableHeaderCell>
+                    </PermissionAuthorizeView>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                @foreach (var location in _locations)
+                {
+                    <TableRow Clicked="@(() => EditLocation(location))">
+                        <TableRowHeader>@location.Name</TableRowHeader>
+                        <TableRowCell>@location.AlternateName</TableRowCell>
+                        <PermissionAuthorizeView Permission="location.update">
+                            <TableRowCell><Button Color="Color.Primary" Clicked="@(() => EditLocation(location))"><Icon Name="IconName.Edit" /></Button></TableRowCell>
+                        </PermissionAuthorizeView>
+                    </TableRow>
+                }
+            </TableBody>
+        </Table>
+    </Column>
+</Row>
+@if (_selectedLocation != null)
+{
+    <LocationEditModal Location="@_selectedLocation" />
+}
+
+@code {
+    private IEnumerable<Location> _locations = new Location[] {};
+    private Location? _selectedLocation = null;
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _locations = await LocationApiService.GetLocations(new Pagination()
+            {
+                Pages = 1,
+                PageSize = 10,
+                CurrentPage = 1,
+            });
+        }
+        catch (Exception e)
+        {
+            AppErrorContext.SetError(new Error(
+                isRecoverable: false,
+                errorMessage:"Unable to fetch locations.",
+                errorDetails: "A network error has occured.",
+                errorStackTrace: e.StackTrace
+                ));
+            _locations = new Location[] {};
+        }
+    }
+
+    private async void EditLocation(Location location)
+    {
+        _selectedLocation = location;
+    }
+
+}

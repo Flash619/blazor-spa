@@ -1,0 +1,66 @@
+﻿@using Blazorise
+@using Cmta.Hosts.General.Shared.Location
+
+<Modal Visible="@(Location != null)">
+    <ModalBackdrop/>
+    <ModalContent>
+        <ModalHeader>
+            <ModalTitle>
+                Edit Location
+            </ModalTitle>
+            <CloseButton Clicked="@Close"/>
+        </ModalHeader>
+        <ModalBody>
+            <Field>
+                <FieldLabel>
+                    Name
+                </FieldLabel>
+                <TextEdit Text="@(Location?.Name ?? "")"/>
+            </Field>
+            <Field>
+                <FieldLabel>
+                    Alternate Name
+                </FieldLabel>
+                <TextEdit Text="@(Location?.AlternateName ?? "")"/>
+            </Field>
+            <Field>
+                <FieldLabel>
+                    Address
+                </FieldLabel>
+                <TextEdit Text="@(Location?.Address ?? "")"/>
+            </Field>
+            <Field>
+                <FieldLabel>
+                    Enabled
+                </FieldLabel>
+                <Switch Checked="@(Location?.Enabled ?? false)"/>
+            </Field>
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Color.Secondary" Clicked="@Close">Close</Button>
+            <Button Color="Color.Primary" Clicked="@Close">Save Changes</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+@code {
+
+    [Parameter]
+    public Location? Location { get; set; }
+
+    private void Close()
+    {
+        Location = null;
+    }
+
+    private void UpdateLocation()
+    {
+        
+    }
+
+    protected override void OnInitialized()
+    {
+    // TODO Eventually re-fetch location to avoid stale data? 
+    }
+
+}

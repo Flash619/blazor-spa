@@ -1,0 +1,38 @@
+﻿@using Cmta.Clients.Spa.Contexts.Error
+@using Blazorise
+@inject IAppErrorContext AppErrorContext
+
+<Alert Visible="@AppErrorContext.IsInErrorState" Color="@GetAlertColor()">
+    @if (AppErrorContext.Error?.ErrorMessage != null)
+    {
+        <AlertMessage>
+            @AppErrorContext.Error.ErrorMessage
+        </AlertMessage>
+        @if (AppErrorContext.Error.ErrorDetails != null)
+        {
+            <AlertDescription>
+                @AppErrorContext.Error.ErrorDetails
+            </AlertDescription>
+        }
+       
+    }
+    else
+    {
+        <AlertMessage>
+            An internal error has occured within the application. Please refresh the page and try again.
+        </AlertMessage>
+    }
+     <CloseButton />
+</Alert>
+
+@code {
+
+    private Color GetAlertColor()
+    {
+        if (AppErrorContext.IsInErrorState && AppErrorContext.Error != null)
+        {
+            return AppErrorContext.Error.IsRecoverable ? Color.Warning : Color.Danger;
+        }
+        return Color.Danger;
+    }
+}

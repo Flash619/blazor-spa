@@ -1,0 +1,35 @@
+﻿@page "/claims"
+@using Microsoft.AspNetCore.Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<AuthorizeView>
+    <Authorized>
+        <h2>
+            Hello @context.User.Identity.Name,
+            here's the list of your claims:
+        </h2>
+        <ul>
+            @foreach (var claim in context.User.Claims)
+            {
+                <li><b>@claim.Type</b>: @claim.Value</li>
+            }
+        </ul>
+    </Authorized>
+    <NotAuthorized>
+        <p>I'm sorry, I can't display anything until you log in</p>
+    </NotAuthorized>
+</AuthorizeView>
+
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        var auth = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = auth.User;
+        var claims = user.Claims;
+        foreach (var claim in claims)
+        {
+            await Console.Error.WriteLineAsync($"{claim.Type} - {claim.Value}");
+        }
+    }
+}

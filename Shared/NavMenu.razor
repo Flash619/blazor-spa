@@ -1,0 +1,55 @@
+﻿@using Blazorise
+@using Cmta.Clients.Spa.Security
+
+<Bar
+    Style="box-shadow: none; padding: 0;"
+    Mode="BarMode.VerticalInline"
+    CollapseMode="BarCollapseMode.Small"
+    Breakpoint="Breakpoint.Desktop"
+    NavigationBreakpoint="Breakpoint.Tablet"
+    ThemeContrast="ThemeContrast.Dark">
+    <BarBrand>
+        <BarItem>
+            <BarLink To="">
+                <BarIcon IconName="IconName.Dashboard"/>
+                CMTA
+            </BarLink>
+        </BarItem>
+    </BarBrand>
+    <BarMenu>
+        <BarStart>
+            <AuthorizeView>
+                <BarItem>
+                    <BarLink>
+                        <BarIcon IconName="IconName.Home"/>
+                        Home
+                    </BarLink>
+                </BarItem>
+                <BarItem>
+                    <BarLink>Administration</BarLink>
+                </BarItem>
+                <BarItem>
+                    <BarDropdown>
+                        <BarDropdownToggle>
+                            <BarIcon IconName="IconName.Store"/>
+                            Organization
+                        </BarDropdownToggle>
+                        <BarDropdownMenu>
+                            <BarDropdownItem>Organization</BarDropdownItem>
+                            <PermissionAuthorizeView Context="locationAuthorizedView" Permissions="@_locationPermissions">
+                                <BarDropdownItem href="/organization/locations">Locations</BarDropdownItem>
+                            </PermissionAuthorizeView>
+                        </BarDropdownMenu>
+                    </BarDropdown>
+                </BarItem>
+            </AuthorizeView>
+            <BarItem>
+                <LoginDisplay/>
+            </BarItem>
+        </BarStart>
+    </BarMenu>
+</Bar>
+
+@code {
+    private readonly string[] _locationPermissions = new[] {"location.create", "location.update", "location.delete"};
+}
